@@ -4,18 +4,23 @@ using System.IO;
 
 namespace DevDefined.OAuth.Consumer
 {
-  public class RequestDescription
-  {
-    public RequestDescription()
+    public class RequestDescription
     {
-      Headers = new NameValueCollection();
-    }
+        public RequestDescription()
+        {
+            Headers = new NameValueCollection();
+        }
 
-    public Uri Url { get; set; }
-    public string Method { get; set; }
-    public string ContentType { get; set; }
-    public string Body { get; set; }
-    public Stream RequestStream { get; set; }
-    public NameValueCollection Headers { get; private set; }
-  }
+        public string Body { get; set; }
+
+        public string ContentType { get; set; }
+
+        public NameValueCollection Headers { get; private set; }
+
+        public string Method { get; set; }
+
+        public Stream RequestStream { get; set; }
+
+        public Uri Url { get; set; }
+    }
 }

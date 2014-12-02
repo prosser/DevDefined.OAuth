@@ -5,7 +5,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace DevDefined.OAuth.Consumer
 {
-
     public interface IConsumerRequestRunner
     {
         IConsumerResponse Run(IConsumerRequest consumerRequest);
@@ -13,7 +12,6 @@ namespace DevDefined.OAuth.Consumer
 
     public class DefaultConsumerRequestRunner : IConsumerRequestRunner
     {
-
         public IConsumerResponse Run(IConsumerRequest consumerRequest)
         {
             HttpWebRequest webRequest = consumerRequest.ToWebRequest();
@@ -85,6 +83,4 @@ namespace DevDefined.OAuth.Consumer
             return stopwatch.Elapsed;
         }
     }
-
-
 }

@@ -13,24 +13,24 @@ namespace DevDefined.OAuth.Storage.Basic
             _accessToken = new AccessToken { Token = accessToken, TokenSecret = accessTokenSecret };
         }
 
-        public RequestToken GetRequestToken()
-        {
-            return _requestToken;
-        }
-
-        public void SaveRequestToken(RequestToken requestToken)
-        {
-            throw new NotImplementedException("The request token cannot be altered when using the FixedValueTokenRepository");
-        }
-
         public AccessToken GetAccessToken()
         {
             return _accessToken;
         }
 
+        public RequestToken GetRequestToken()
+        {
+            return _requestToken;
+        }
+
         public void SaveAccessToken(AccessToken accessToken)
         {
             throw new NotImplementedException("The access token cannot be altered when using the FixedValueTokenRepository");
+        }
+
+        public void SaveRequestToken(RequestToken requestToken)
+        {
+            throw new NotImplementedException("The request token cannot be altered when using the FixedValueTokenRepository");
         }
     }
 }

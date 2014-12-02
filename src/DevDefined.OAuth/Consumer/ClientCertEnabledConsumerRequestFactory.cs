@@ -1,9 +1,9 @@
-#region License
+﻿#region License
 
 // The MIT License
 //
 // Copyright (c) 2006-2008 DevDefined Limited.
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -22,14 +22,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#endregion License
+#endregion
 
-namespace DevDefined.OAuth.Framework
+using DevDefined.OAuth.Framework;
+
+namespace DevDefined.OAuth.Consumer
 {
-    public static class SignatureMethod
-    {
-        public const string HmacSha1 = "HMAC-SHA1";
-        public const string PlainText = "PLAINTEXT";
-        public const string RsaSha1 = "RSA-SHA1";
-    }
+	public class ClientCertEnabledConsumerRequestFactory : IConsumerRequestFactory
+	{
+		readonly ICertificateFactory _certificateFactory;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ClientCertEnabledConsumerRequestFactory"/> class.
+		/// </summary>
+		/// <param name="certificateFactory">The certificate factory.</param>
+		public ClientCertEnabledConsumerRequestFactory(ICertificateFactory certificateFactory)
+		{
+			_certificateFactory = certificateFactory;
+		}
+
+		/// <summary>
+		/// Creates the consumer request.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="consumerContext">The consumer context.</param>
+		/// <param name="token">The token.</param>
+		/// <returns></returns>
+		public IConsumerRequest CreateConsumerRequest(IOAuthContext context, IOAuthConsumerContext consumerContext, IToken token)
+		{
+			return new ClientCertEnabledConsumerRequest(_certificateFactory, context, consumerContext, token);
+		}
+	}
 }

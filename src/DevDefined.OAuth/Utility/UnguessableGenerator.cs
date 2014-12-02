@@ -2,41 +2,41 @@
 
 namespace DevDefined.OAuth.Utility
 {
-  /// <summary>
-  /// A simple class which can be used to generate "unguessable" verifier values.
-  /// </summary>
-  public class UnguessableGenerator
-  {
-    const string AllowableCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/^()";
-
     /// <summary>
-    /// Generates an unguessable string sequence of a certain length
+    /// A simple class which can be used to generate "unguessable" verifier values.
     /// </summary>
-    /// <param name="length"></param>
-    /// <returns></returns>
-    public static string GenerateUnguessable(int length)
+    public class UnguessableGenerator
     {
-      var random = new Random();
+        private const string AllowableCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/^()";
 
-      var chars = new char[length];
+        /// <summary>
+        /// Generates an unguessable string sequence of a certain length
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string GenerateUnguessable(int length)
+        {
+            var random = new Random();
 
-      int allowableLength = AllowableCharacters.Length;
+            var chars = new char[length];
 
-      for (int i = 0; i < length; i++)
-      {
-        chars[i] = AllowableCharacters[random.Next(allowableLength)];
-      }
+            int allowableLength = AllowableCharacters.Length;
 
-      return new string(chars);
+            for (int i = 0; i < length; i++)
+            {
+                chars[i] = AllowableCharacters[random.Next(allowableLength)];
+            }
+
+            return new string(chars);
+        }
+
+        /// <summary>
+        /// Generates an ungessable string, defaults the length to what google uses (24 characters)
+        /// </summary>
+        /// <returns></returns>
+        public static string GenerateUnguessable()
+        {
+            return GenerateUnguessable(24);
+        }
     }
-
-    /// <summary>
-    /// Generates an ungessable string, defaults the length to what google uses (24 characters)
-    /// </summary>
-    /// <returns></returns>
-    public static string GenerateUnguessable()
-    {
-      return GenerateUnguessable(24);
-    }
-  }
 }

@@ -27,19 +27,6 @@ namespace DevDefined.OAuth.Consumer
         }
 
         /// <summary>
-        /// Remotes the certificate validation callback.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="certificate">The certificate.</param>
-        /// <param name="chain">The chain.</param>
-        /// <param name="sslPolicyErrors">The SSL policy errors.</param>
-        /// <returns></returns>
-        public bool RemoteCertificateValidationCallback(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
-        }
-
-        /// <summary>
         /// Creates the certificate.
         /// </summary>
         /// <returns></returns>
@@ -59,6 +46,19 @@ namespace DevDefined.OAuth.Consumer
         }
 
         /// <summary>
+        /// Remotes the certificate validation callback.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="certificate">The certificate.</param>
+        /// <param name="chain">The chain.</param>
+        /// <param name="sslPolicyErrors">The SSL policy errors.</param>
+        /// <returns></returns>
+        public bool RemoteCertificateValidationCallback(Object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Gets the certificate collection.
         /// </summary>
         /// <returns></returns>
@@ -70,6 +70,6 @@ namespace DevDefined.OAuth.Consumer
             certStore.Close();
 
             return certificateCollection;
-        } 
+        }
     }
 }

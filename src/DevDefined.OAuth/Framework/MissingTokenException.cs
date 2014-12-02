@@ -23,6 +23,5 @@ namespace XeroApi.OAuth.Framework
             : base(info, context)
         {
         }
-
     }
 }

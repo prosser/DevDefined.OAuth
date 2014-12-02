@@ -4,7 +4,7 @@ namespace DevDefined.OAuth.Consumer
 {
     public class DefaultConsumerRequestFactory : IConsumerRequestFactory
     {
-        static IConsumerRequestFactory _defaultInstance;
+        private static IConsumerRequestFactory _defaultInstance;
 
         public DefaultConsumerRequestFactory()
         {
@@ -23,7 +23,7 @@ namespace DevDefined.OAuth.Consumer
 
         public ICertificateFactory CertificateFactory
         {
-            get; 
+            get;
             set;
         }
 

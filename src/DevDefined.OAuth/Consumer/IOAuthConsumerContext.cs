@@ -3,7 +3,7 @@
 // The MIT License
 //
 // Copyright (c) 2006-2008 DevDefined Limited.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -22,34 +22,46 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#endregion
+#endregion License
 
+using DevDefined.OAuth.Framework;
 using System;
 using System.Security.Cryptography;
-using DevDefined.OAuth.Framework;
 
 namespace DevDefined.OAuth.Consumer
 {
-  /// <summary>
-  /// A consumer context is used to identify a consumer, and to sign a context on behalf 
-  /// of a consumer using an optional supplied token.
-  /// </summary>
-  public interface IOAuthConsumerContext
-  {
-    string Realm { get; set; }
-    string ConsumerKey { get; set; }
-    string ConsumerSecret { get; set; }
-    string SignatureMethod { get; }
-    string UserAgent { get; set; }
-    Uri ProxyUri { get; set; }
-    AsymmetricAlgorithm Key { get; }
-    bool UseHeaderForOAuthParameters { get; }
-    void SignContext(IOAuthContext context);
-    void SignContextWithToken(IOAuthContext context, IToken token);
+    /// <summary>
+    /// A consumer context is used to identify a consumer, and to sign a context on behalf
+    /// of a consumer using an optional supplied token.
+    /// </summary>
+    public interface IOAuthConsumerContext
+    {
+        Uri AccessTokenUri { get; set; }
 
-    Uri RequestTokenUri { get; set; }
-    Uri UserAuthorizeUri { get; set; }
-    Uri AccessTokenUri { get; set; }
-    Uri BaseEndpointUri { get; set; }
-  }
+        Uri BaseEndpointUri { get; set; }
+
+        string ConsumerKey { get; set; }
+
+        string ConsumerSecret { get; set; }
+
+        AsymmetricAlgorithm Key { get; set; }
+
+        Uri ProxyUri { get; set; }
+
+        string Realm { get; set; }
+
+        Uri RequestTokenUri { get; set; }
+
+        string SignatureMethod { get; set; }
+
+        bool UseHeaderForOAuthParameters { get; set; }
+
+        string UserAgent { get; set; }
+
+        Uri UserAuthorizeUri { get; set; }
+
+        void SignContext(IOAuthContext context);
+
+        void SignContextWithToken(IOAuthContext context, IToken token);
+    }
 }

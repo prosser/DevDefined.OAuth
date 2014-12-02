@@ -1,16 +1,16 @@
 ﻿namespace DevDefined.OAuth.Storage.Basic
 {
-  /// <summary>
-  /// A simplistic repository for access and request of token models.
-  /// </summary>    
-  public interface ITokenRepository
-  {
-      RequestToken GetRequestToken();
+    /// <summary>
+    /// A simplistic repository for access and request of token models.
+    /// </summary>
+    public interface ITokenRepository
+    {
+        AccessToken GetAccessToken();
 
-      void SaveRequestToken(RequestToken requestToken);
+        RequestToken GetRequestToken();
 
-      AccessToken GetAccessToken();
+        void SaveAccessToken(AccessToken accessToken);
 
-      void SaveAccessToken(AccessToken accessToken);
-  }
+        void SaveRequestToken(RequestToken requestToken);
+    }
 }

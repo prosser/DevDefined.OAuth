@@ -3,7 +3,7 @@
 // The MIT License
 //
 // Copyright (c) 2006-2008 DevDefined Limited.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -22,54 +22,56 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#endregion
+#endregion License
 
+using DevDefined.OAuth.Consumer;
 using System;
 using System.Runtime.Serialization;
-using DevDefined.OAuth.Consumer;
 
 namespace DevDefined.OAuth.Framework
 {
-  public class OAuthException : Exception
-  {
-    public OAuthException()
+    public class OAuthException : Exception
     {
-    }
+        public OAuthException()
+        {
+        }
 
-    public OAuthException(string message, Exception innerException)
-      : base(message, innerException)
-    {      
-    }
+        public OAuthException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
 
-    public OAuthException(IOAuthContext context, string problem, string advice) 
-        : base(advice)
-    {
-      Context = context;
-      Report = new OAuthProblemReport() {Problem = problem, ProblemAdvice = advice};
-    }
+        public OAuthException(IOAuthContext context, string problem, string advice)
+            : base(advice)
+        {
+            Context = context;
+            Report = new OAuthProblemReport() { Problem = problem, ProblemAdvice = advice };
+        }
 
-    public OAuthException(IOAuthContext context, string problem, string advice, Exception innerException)
-      : base(advice, innerException)
-    {
-      Context = context;
-      Report = new OAuthProblemReport() {Problem = problem, ProblemAdvice = advice};
-    }
+        public OAuthException(IOAuthContext context, string problem, string advice, Exception innerException)
+            : base(advice, innerException)
+        {
+            Context = context;
+            Report = new OAuthProblemReport() { Problem = problem, ProblemAdvice = advice };
+        }
 
-    public OAuthException(SerializationInfo info, StreamingContext context) 
-        : base(info, context)
-    {
-    }
+        public OAuthException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
 
-    public OAuthException(IConsumerResponse consumerResponse, IOAuthContext requestContext, OAuthProblemReport problemReport)
-        : base(problemReport.ProblemAdvice)
-    {
-        ConsumerResponse = consumerResponse;
-        Report = problemReport;
-        Context = requestContext;
-    }
+        public OAuthException(IConsumerResponse consumerResponse, IOAuthContext requestContext, OAuthProblemReport problemReport)
+            : base(problemReport.ProblemAdvice)
+        {
+            ConsumerResponse = consumerResponse;
+            Report = problemReport;
+            Context = requestContext;
+        }
 
-    public OAuthProblemReport Report { get; set; }
-    public IOAuthContext Context { get; set; }
-    public IConsumerResponse ConsumerResponse { get; set;}
-  }
+        public IConsumerResponse ConsumerResponse { get; set; }
+
+        public IOAuthContext Context { get; set; }
+
+        public OAuthProblemReport Report { get; set; }
+    }
 }

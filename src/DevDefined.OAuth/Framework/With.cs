@@ -3,7 +3,7 @@
 // The MIT License
 //
 // Copyright (c) 2006-2008 DevDefined Limited.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#endregion
+#endregion License
 
 using System;
 using System.Net;
@@ -31,35 +31,35 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace DevDefined.OAuth.Framework
 {
-  public static class With
-  {
-    public static IDisposable NoCertificateValidation()
+    public static class With
     {
-      RemoteCertificateValidationCallback oldCallback = ServicePointManager.ServerCertificateValidationCallback;
-      ServicePointManager.ServerCertificateValidationCallback = CertificateAlwaysValidCallback;
-      return new DisposableAction(delegate { ServicePointManager.ServerCertificateValidationCallback = oldCallback; });
+        public static IDisposable NoCertificateValidation()
+        {
+            RemoteCertificateValidationCallback oldCallback = ServicePointManager.ServerCertificateValidationCallback;
+            ServicePointManager.ServerCertificateValidationCallback = CertificateAlwaysValidCallback;
+            return new DisposableAction(delegate { ServicePointManager.ServerCertificateValidationCallback = oldCallback; });
+        }
+
+        private static bool CertificateAlwaysValidCallback(object sender, X509Certificate certificate, X509Chain chain,
+                                                   SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
     }
 
-    static bool CertificateAlwaysValidCallback(object sender, X509Certificate certificate, X509Chain chain,
-                                               SslPolicyErrors sslPolicyErrors)
+    public class DisposableAction : IDisposable
     {
-      return true;
-    }
-  }
+        private readonly Action _action;
 
-  public class DisposableAction : IDisposable
-  {
-    readonly Action _action;
+        public DisposableAction(Action action)
+        {
+            if (action == null) throw new ArgumentNullException("action");
+            _action = action;
+        }
 
-    public DisposableAction(Action action)
-    {
-      if (action == null) throw new ArgumentNullException("action");
-      _action = action;
+        public void Dispose()
+        {
+            _action();
+        }
     }
-
-    public void Dispose()
-    {
-      _action();
-    }
-  }
 }

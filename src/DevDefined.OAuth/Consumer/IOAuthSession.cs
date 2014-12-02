@@ -1,9 +1,9 @@
-#region License 
+#region License
 
 // The MIT License
 //
 // Copyright (c) 2006-2008 DevDefined Limited.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -22,36 +22,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#endregion
+#endregion License
 
-using System;
-using System.Collections.Generic;
 using DevDefined.OAuth.Framework;
 using DevDefined.OAuth.Storage.Basic;
+using System;
+using System.Collections.Generic;
 
 namespace DevDefined.OAuth.Consumer
 {
     public interface IOAuthSession
     {
-        IOAuthConsumerContext ConsumerContext { get; set; }
-        ITokenRepository TokenRepository { get; }
-
         [Obsolete("All tokens should be stored in a ITokenRepository", true)]
         IToken AccessToken { get; set; }
 
-        IConsumerRequest Request();
+        IOAuthConsumerContext ConsumerContext { get; set; }
 
-        [Obsolete("Use the overloaded method without using an access token")]
-        IConsumerRequest Request(IToken accessToken);
-
-        RequestToken GetRequestToken();
-        RequestToken GetRequestToken(Uri callbackUri);
-
-        AccessToken GetAccessToken();
         bool HasValidAccessToken { get; }
 
         IMessageLogger MessageLogger { get; set; }
-        IConsumerResponse LogMessage(IConsumerRequest request, IConsumerResponse response);
+
+        ITokenRepository TokenRepository { get; }
 
         [Obsolete("The request token is stored in the TokenRepository, use the overloaded method that only uses a verificationCode parameter")]
         AccessToken ExchangeRequestTokenForAccessToken(IToken requestToken);
@@ -61,24 +52,41 @@ namespace DevDefined.OAuth.Consumer
 
         AccessToken ExchangeRequestTokenForAccessToken(string verificationCode);
 
+        AccessToken GetAccessToken();
+
+        RequestToken GetRequestToken();
+
+        RequestToken GetRequestToken(Uri callbackUri);
+
+        string GetUserAuthorizationUrl();
+
         [Obsolete("Use the GetUserAuthorizationUrl method instead")]
         string GetUserAuthorizationUrlForToken(IToken token, string callbackUrl);
 
         [Obsolete("Use the GetUserAuthorizationUrl method instead")]
         string GetUserAuthorizationUrlForToken(IToken token);
 
-        string GetUserAuthorizationUrl();
-
-        IOAuthSession WithFormParameters(IDictionary<string, string> dictionary);
-        IOAuthSession WithQueryParameters(IDictionary<string, string> dictionary);
-        IOAuthSession WithCookies(IDictionary<string, string> dictionary);
-        IOAuthSession WithHeaders(IDictionary<string, string> dictionary);
+        IConsumerResponse LogMessage(IConsumerRequest request, IConsumerResponse response);
 
         // http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html
         [Obsolete("Use the overloaded method that gets the current access token and session handle from the token repository")]
         AccessToken RenewAccessToken(IToken accessToken, string sessionHandle);
+
         AccessToken RenewAccessToken();
 
+        IConsumerRequest Request();
+
+        [Obsolete("Use the overloaded method without using an access token")]
+        IConsumerRequest Request(IToken accessToken);
+
         IConsumerResponse RunConsumerRequest(IConsumerRequest consumerRequest);
+
+        IOAuthSession WithCookies(IDictionary<string, string> dictionary);
+
+        IOAuthSession WithFormParameters(IDictionary<string, string> dictionary);
+
+        IOAuthSession WithHeaders(IDictionary<string, string> dictionary);
+
+        IOAuthSession WithQueryParameters(IDictionary<string, string> dictionary);
     }
 }

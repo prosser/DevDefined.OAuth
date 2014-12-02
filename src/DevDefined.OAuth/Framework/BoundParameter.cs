@@ -2,10 +2,10 @@
 
 namespace DevDefined.OAuth.Framework
 {
-    class BoundParameter
+    internal class BoundParameter
     {
-        readonly OAuthContext _context;
-        readonly string _name;
+        private readonly OAuthContext _context;
+        private readonly string _name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoundParameter"/> class.
@@ -24,7 +24,7 @@ namespace DevDefined.OAuth.Framework
         /// <value>The value.</value>
         public string Value
         {
-            get 
+            get
             {
                 if (_context.AuthorizationHeaderParameters[_name] != null)
                     return _context.AuthorizationHeaderParameters[_name];
@@ -54,7 +54,7 @@ namespace DevDefined.OAuth.Framework
         /// Gets the collection.
         /// </summary>
         /// <value>The collection.</value>
-        NameValueCollection Collection
+        private NameValueCollection Collection
         {
             get
             {
@@ -67,6 +67,5 @@ namespace DevDefined.OAuth.Framework
                 return _context.FormEncodedParameters;
             }
         }
-
     }
 }

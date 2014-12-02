@@ -3,7 +3,7 @@
 // The MIT License
 //
 // Copyright (c) 2006-2008 DevDefined Limited.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -22,81 +22,81 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#endregion
+#endregion License
 
 using DevDefined.OAuth.Framework;
 using DevDefined.OAuth.Storage.Basic;
 
 namespace DevDefined.OAuth.Storage
 {
-  public interface ITokenStore
-  {
-    /// <summary>
-    /// Creates a request token for the consumer.
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    IToken CreateRequestToken(IOAuthContext context);
+    public interface ITokenStore
+    {
+        /// <summary>
+        /// Should consume a use of an access token, throwing a <see cref="OAuthException" /> on failure.
+        /// </summary>
+        /// <param name="accessContext"></param>
+        void ConsumeAccessToken(IOAuthContext accessContext);
 
-    /// <summary>
-    /// Should consume a use of the request token, throwing a <see cref="OAuthException" /> on failure.
-    /// </summary>
-    /// <param name="requestContext"></param>
-    void ConsumeRequestToken(IOAuthContext requestContext);
+        /// <summary>
+        /// Should consume a use of the request token, throwing a <see cref="OAuthException" /> on failure.
+        /// </summary>
+        /// <param name="requestContext"></param>
+        void ConsumeRequestToken(IOAuthContext requestContext);
 
-    /// <summary>
-    /// Should consume a use of an access token, throwing a <see cref="OAuthException" /> on failure.
-    /// </summary>
-    /// <param name="accessContext"></param>
-    void ConsumeAccessToken(IOAuthContext accessContext);
+        /// <summary>
+        /// Creates a request token for the consumer.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        IToken CreateRequestToken(IOAuthContext context);
 
-    /// <summary>
-    /// Get the access token associated with a request token.
-    /// </summary>
-    /// <param name="requestContext"></param>
-    /// <returns></returns>
-    IToken GetAccessTokenAssociatedWithRequestToken(IOAuthContext requestContext);
+        /// <summary>
+        /// Get the access token associated with a request token.
+        /// </summary>
+        /// <param name="requestContext"></param>
+        /// <returns></returns>
+        IToken GetAccessTokenAssociatedWithRequestToken(IOAuthContext requestContext);
 
-    /// <summary>
-    /// Returns the status for a request to access a consumers resources.
-    /// </summary>
-    /// <param name="requestContext"></param>
-    /// <returns></returns>
-    RequestForAccessStatus GetStatusOfRequestForAccess(IOAuthContext requestContext);
+        /// <summary>
+        /// Gets the token secret for the supplied access token
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>token secret</returns>
+        string GetAccessTokenSecret(IOAuthContext context);
 
-    /// <summary>
-    /// Returns the callback url that is stored against this token.
-    /// </summary>
-    /// <param name="requestContext"></param>
-    /// <returns></returns>
-    string GetCallbackUrlForToken(IOAuthContext requestContext);
+        /// <summary>
+        /// Returns the callback url that is stored against this token.
+        /// </summary>
+        /// <param name="requestContext"></param>
+        /// <returns></returns>
+        string GetCallbackUrlForToken(IOAuthContext requestContext);
 
-    /// <summary>
-    /// Retrieves the verification code for a token
-    /// </summary>
-    /// <param name="requestContext"></param>
-    /// <returns>verification code</returns>
-    string GetVerificationCodeForRequestToken(IOAuthContext requestContext);
+        /// <summary>
+        /// Gets the token secret for the supplied request token
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>token secret</returns>
+        string GetRequestTokenSecret(IOAuthContext context);
 
-    /// <summary>
-    /// Gets the token secret for the supplied request token
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns>token secret</returns>
-    string GetRequestTokenSecret(IOAuthContext context);
+        /// <summary>
+        /// Returns the status for a request to access a consumers resources.
+        /// </summary>
+        /// <param name="requestContext"></param>
+        /// <returns></returns>
+        RequestForAccessStatus GetStatusOfRequestForAccess(IOAuthContext requestContext);
 
-    /// <summary>
-    /// Gets the token secret for the supplied access token
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns>token secret</returns>
-    string GetAccessTokenSecret(IOAuthContext context);
-      
-    /// <summary>
-    /// Renews the access token.
-    /// </summary>
-    /// <param name="requestContext">The request context.</param>
-    /// <returns>Return a new access token with the same oauth_session_handle as the near-expired session token</returns>
-    AccessToken RenewAccessToken(IOAuthContext requestContext);
-  }
+        /// <summary>
+        /// Retrieves the verification code for a token
+        /// </summary>
+        /// <param name="requestContext"></param>
+        /// <returns>verification code</returns>
+        string GetVerificationCodeForRequestToken(IOAuthContext requestContext);
+
+        /// <summary>
+        /// Renews the access token.
+        /// </summary>
+        /// <param name="requestContext">The request context.</param>
+        /// <returns>Return a new access token with the same oauth_session_handle as the near-expired session token</returns>
+        AccessToken RenewAccessToken(IOAuthContext requestContext);
+    }
 }
