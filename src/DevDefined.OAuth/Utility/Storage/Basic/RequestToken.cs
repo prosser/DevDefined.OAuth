@@ -24,28 +24,37 @@
 
 #endregion
 
-using System.Collections.Generic;
+using System;
 using DevDefined.OAuth.Framework;
 
 namespace DevDefined.OAuth.Storage.Basic
 {
-	/// <summary>
-	/// In-Memory implementation of a token repository
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class InMemoryTokenRepository<T> : ITokenRepository<T>
-		where T : TokenBase
-	{
-		readonly Dictionary<string, T> _tokens = new Dictionary<string, T>();
+    /// <summary>
+    /// Simple request token model, this provides information about a request token which has been issued, including
+    /// who it was issued to, if the token has been used up (a request token should only be presented once), and 
+    /// the associated access token (if a user has granted access to a consumer i.e. given them access).
+    /// </summary>
+    public class RequestToken : TokenBase
+    {
+        [Obsolete("This parameter is not used", true)]
+        public bool AccessDenied { get; set; }
 
-		public T GetToken(string token)
-		{
-			return _tokens[token];
-		}
+		[Obsolete("This parameter is not used", true)]
+        public bool UsedUp { get; set; }
 
-		public void SaveToken(T token)
-		{
-			_tokens[token.Token] = token;
-		}
-	}
+        public AccessToken AccessToken { get; set; }
+
+        public string CallbackUrl { get; set; }
+
+        public string Verifier { get; set; }
+
+        public override string ToString()
+        {
+            string formattedToken = base.ToString();
+
+            formattedToken += "&" + Parameters.OAuth_Callback_Confirmed + "=true";
+
+            return formattedToken;
+        }
+    }
 }

@@ -25,42 +25,60 @@
 #endregion
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using DevDefined.OAuth.Framework;
+using DevDefined.OAuth.Storage.Basic;
 
 namespace DevDefined.OAuth.Consumer
 {
-	public interface IOAuthSession
-	{
-		IOAuthConsumerContext ConsumerContext { get; set; }
-		Uri RequestTokenUri { get; set; }
-		Uri AccessTokenUri { get; set; }
-		Uri UserAuthorizeUri { get; set; }
-		Uri ProxyServerUri { get; set; }
-		Uri CallbackUri { get; set; }
-		IToken AccessToken { get; set; }
-		Action<string> ResponseBodyAction { get; set; }
-		IConsumerRequest Request();
-		IConsumerRequest Request(IToken accessToken);
-		IToken GetRequestToken();
-		IToken GetRequestToken(string method);
-		IToken ExchangeRequestTokenForAccessToken(IToken requestToken);
-		IToken ExchangeRequestTokenForAccessToken(IToken requestToken, string verificationCode);
-		IToken ExchangeRequestTokenForAccessToken(IToken requestToken, string method, string verificationCode);
-    IToken GetAccessTokenUsingXAuth(string authMode, string username, string password);
-    IConsumerRequest BuildRequestTokenContext(string method);
-		IConsumerRequest BuildExchangeRequestTokenForAccessTokenContext(IToken requestToken, string method, string verificationCode);
-    IConsumerRequest BuildAccessTokenContext(string method, string xAuthMode, string xAuthUsername, string xAuthPassword);
-    string GetUserAuthorizationUrlForToken(IToken token, string callbackUrl);
-		string GetUserAuthorizationUrlForToken(IToken token);
-		IOAuthSession WithFormParameters(IDictionary dictionary);
-		IOAuthSession WithFormParameters(object anonymousClass);
-		IOAuthSession WithQueryParameters(IDictionary dictionary);
-		IOAuthSession WithQueryParameters(object anonymousClass);
-		IOAuthSession WithCookies(IDictionary dictionary);
-		IOAuthSession WithCookies(object anonymousClass);
-		IOAuthSession WithHeaders(IDictionary dictionary);
-		IOAuthSession WithHeaders(object anonymousClass);
-		IOAuthSession RequiresCallbackConfirmation();
-	}
+    public interface IOAuthSession
+    {
+        IOAuthConsumerContext ConsumerContext { get; set; }
+        ITokenRepository TokenRepository { get; }
+
+        [Obsolete("All tokens should be stored in a ITokenRepository", true)]
+        IToken AccessToken { get; set; }
+
+        IConsumerRequest Request();
+
+        [Obsolete("Use the overloaded method without using an access token")]
+        IConsumerRequest Request(IToken accessToken);
+
+        RequestToken GetRequestToken();
+        RequestToken GetRequestToken(Uri callbackUri);
+
+        AccessToken GetAccessToken();
+        bool HasValidAccessToken { get; }
+
+        IMessageLogger MessageLogger { get; set; }
+        IConsumerResponse LogMessage(IConsumerRequest request, IConsumerResponse response);
+
+        [Obsolete("The request token is stored in the TokenRepository, use the overloaded method that only uses a verificationCode parameter")]
+        AccessToken ExchangeRequestTokenForAccessToken(IToken requestToken);
+
+        [Obsolete("The request token is stored in the TokenRepository, use the overloaded method that only uses a verificationCode parameter")]
+        AccessToken ExchangeRequestTokenForAccessToken(IToken requestToken, string verificationCode);
+
+        AccessToken ExchangeRequestTokenForAccessToken(string verificationCode);
+
+        [Obsolete("Use the GetUserAuthorizationUrl method instead")]
+        string GetUserAuthorizationUrlForToken(IToken token, string callbackUrl);
+
+        [Obsolete("Use the GetUserAuthorizationUrl method instead")]
+        string GetUserAuthorizationUrlForToken(IToken token);
+
+        string GetUserAuthorizationUrl();
+
+        IOAuthSession WithFormParameters(IDictionary<string, string> dictionary);
+        IOAuthSession WithQueryParameters(IDictionary<string, string> dictionary);
+        IOAuthSession WithCookies(IDictionary<string, string> dictionary);
+        IOAuthSession WithHeaders(IDictionary<string, string> dictionary);
+
+        // http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html
+        [Obsolete("Use the overloaded method that gets the current access token and session handle from the token repository")]
+        AccessToken RenewAccessToken(IToken accessToken, string sessionHandle);
+        AccessToken RenewAccessToken();
+
+        IConsumerResponse RunConsumerRequest(IConsumerRequest consumerRequest);
+    }
 }

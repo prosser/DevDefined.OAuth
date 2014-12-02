@@ -25,372 +25,417 @@
 #endregion
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Web;
+using System.Diagnostics;
+using System.Security.Authentication;
 using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Utility;
+using DevDefined.OAuth.Storage.Basic;
+using XeroApi.OAuth.Framework;
+
 
 namespace DevDefined.OAuth.Consumer
 {
-	[Serializable]
-	public class OAuthSession : IOAuthSession
-	{
-		readonly NameValueCollection _cookies = new NameValueCollection();
-		readonly NameValueCollection _formParameters = new NameValueCollection();
-		readonly NameValueCollection _headers = new NameValueCollection();
-		readonly NameValueCollection _queryParameters = new NameValueCollection();
-		IConsumerRequestFactory _consumerRequestFactory = DefaultConsumerRequestFactory.Instance;
+  [Serializable]
+  public class OAuthSession : IOAuthSession
+  {
+    readonly NameValueCollection _cookies = new NameValueCollection();
+    readonly NameValueCollection _formParameters = new NameValueCollection();
+    readonly NameValueCollection _headers = new NameValueCollection();
+    readonly NameValueCollection _queryParameters = new NameValueCollection();
+    readonly ITokenRepository _tokenRepository;
+    
 
-        public OAuthSession(IOAuthConsumerContext consumerContext)
-            : this(consumerContext, (Uri)null, null, null, null)
-        {            
-        }
-
-        public OAuthSession(IOAuthConsumerContext consumerContext, Uri endPointUri)
-            : this(consumerContext, endPointUri, endPointUri, endPointUri, null)
-        {            
-        }
-        
-		public OAuthSession(IOAuthConsumerContext consumerContext, Uri requestTokenUri, Uri userAuthorizeUri, Uri accessTokenUri)
-			: this(consumerContext, requestTokenUri, userAuthorizeUri, accessTokenUri, null)
-		{
-		}
-
-		public OAuthSession(IOAuthConsumerContext consumerContext, Uri requestTokenUri, Uri userAuthorizeUri,
-		                    Uri accessTokenUri, Uri callBackUri)
-		{
-			ConsumerContext = consumerContext;
-			RequestTokenUri = requestTokenUri;
-			AccessTokenUri = accessTokenUri;
-			UserAuthorizeUri = userAuthorizeUri;
-			CallbackUri = callBackUri;
-		}
-
-		public OAuthSession(IOAuthConsumerContext consumerContext, string requestTokenUrl, string userAuthorizeUrl,
-		                    string accessTokenUrl, string callBackUrl)
-			: this(consumerContext, new Uri(requestTokenUrl), new Uri(userAuthorizeUrl), new Uri(accessTokenUrl), ParseCallbackUri(callBackUrl))
-		{
-		}
-
-		public OAuthSession(IOAuthConsumerContext consumerContext, string requestTokenUrl, string userAuthorizeUrl,
-		                    string accessTokenUrl)
-			: this(consumerContext, requestTokenUrl, userAuthorizeUrl, accessTokenUrl, null)
-		{
-		}
-
-		public IConsumerRequestFactory ConsumerRequestFactory
-		{
-			get { return _consumerRequestFactory; }
-			set
-			{
-				if (_consumerRequestFactory == null) throw new ArgumentNullException("value");
-				_consumerRequestFactory = value;
-			}
-		}
-
-		public bool CallbackMustBeConfirmed { get; set; }
-
-		public Uri CallbackUri { get; set; }
-		public bool AddBodyHashesToRawRequests { get; set; }
-
-		public Action<string> ResponseBodyAction { get; set; }
-		public IOAuthConsumerContext ConsumerContext { get; set; }
-		public Uri RequestTokenUri { get; set; }
-		public Uri AccessTokenUri { get; set; }
-		public Uri UserAuthorizeUri { get; set; }
-		public Uri ProxyServerUri { get; set; }
-		public IToken AccessToken { get; set; }
-
-		public IConsumerRequest Request(IToken accessToken)
-		{
-			var context = new OAuthContext
-			              	{
-			              		UseAuthorizationHeader = ConsumerContext.UseHeaderForOAuthParameters,
-			              		IncludeOAuthRequestBodyHashInSignature = AddBodyHashesToRawRequests
-			              	};
-
-			context.Cookies.Add(_cookies);
-			context.FormEncodedParameters.Add(_formParameters);
-			context.Headers.Add(_headers);
-			context.QueryParameters.Add(_queryParameters);
-
-			IConsumerRequest consumerRequest = _consumerRequestFactory.CreateConsumerRequest(context, ConsumerContext, accessToken);
-
-			consumerRequest.ProxyServerUri = ProxyServerUri;
-			consumerRequest.ResponseBodyAction = ResponseBodyAction;
-
-			return consumerRequest;
-		}
-
-		public IConsumerRequest Request()
-		{
-			var context = new OAuthContext
-			              	{
-			              		UseAuthorizationHeader = ConsumerContext.UseHeaderForOAuthParameters,
-			              		IncludeOAuthRequestBodyHashInSignature = AddBodyHashesToRawRequests
-			              	};
-
-			context.Cookies.Add(_cookies);
-			context.FormEncodedParameters.Add(_formParameters);
-			context.Headers.Add(_headers);
-			context.QueryParameters.Add(_queryParameters);
-
-			IConsumerRequest consumerRequest = _consumerRequestFactory.CreateConsumerRequest(context, ConsumerContext, AccessToken);
-
-			consumerRequest.ProxyServerUri = ProxyServerUri;
-			consumerRequest.ResponseBodyAction = ResponseBodyAction;
-
-			return consumerRequest;
-		}
-
-		public IToken GetRequestToken()
-		{
-			return GetRequestToken("GET");
-		}
-
-		public IToken ExchangeRequestTokenForAccessToken(IToken requestToken)
-		{
-			return ExchangeRequestTokenForAccessToken(requestToken, "GET", null);
-		}
-
-		public IToken ExchangeRequestTokenForAccessToken(IToken requestToken, string verificationCode)
-		{
-			return ExchangeRequestTokenForAccessToken(requestToken, "GET", verificationCode);
-		}
-
-		public IToken ExchangeRequestTokenForAccessToken(IToken requestToken, string method, string verificationCode)
-		{
-			TokenBase token = BuildExchangeRequestTokenForAccessTokenContext(requestToken, method, verificationCode)
-				.Select(collection =>
-				        new TokenBase
-				        	{
-				        		ConsumerKey = requestToken.ConsumerKey,
-				        		Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
-				        		TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
-				        		SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle)
-				        	});
-
-			AccessToken = token;
-
-			return token;
-		}
-
-	  public IToken GetAccessTokenUsingXAuth(string authMode, string username, string password)
-      {
-         TokenBase token = BuildAccessTokenContext("GET", authMode, username, password)
-                .Select(collection =>
-                        new TokenBase
-                        {
-                           ConsumerKey = ConsumerContext.ConsumerKey,
-                           Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
-                           TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
-                           SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle)
-                        });
-
-         AccessToken = token;
-         return token;
-	  }
-
-	  public IConsumerRequest BuildRequestTokenContext(string method)
-		{
-			return Request()
-				.ForMethod(method)
-				.AlterContext(context => context.CallbackUrl = (CallbackUri == null) ? "oob" : CallbackUri.ToString())
-				.AlterContext(context => context.Token = null)
-				.ForUri(RequestTokenUri)
-				.SignWithoutToken();
-		}
-
-		public IConsumerRequest BuildExchangeRequestTokenForAccessTokenContext(IToken requestToken, string method, string verificationCode)
-		{
-			return Request()
-				.ForMethod(method)
-				.AlterContext(context => context.Verifier = verificationCode)
-				.ForUri(AccessTokenUri)
-				.SignWithToken(requestToken);
-		}
-
-	  public IConsumerRequest BuildAccessTokenContext(string method, string xAuthMode, string xAuthUsername, string xAuthPassword)
-	  {
-      return Request()
-        .ForMethod(method)
-        .AlterContext(context => context.XAuthUsername = xAuthUsername)
-        .AlterContext(context => context.XAuthPassword = xAuthPassword)
-        .AlterContext(context => context.XAuthMode = xAuthMode)
-        .ForUri(AccessTokenUri)
-        .SignWithoutToken();
+    [Obsolete("Use the constructor with ITokenReposiory parameter")]
+    public OAuthSession(IOAuthConsumerContext consumerContext)
+        : this(consumerContext, new InMemoryTokenRepository())
+    {
     }
 
-	  public string GetUserAuthorizationUrlForToken(IToken token)
-		{
-			return GetUserAuthorizationUrlForToken(token, null);
-		}
 
-		public string GetUserAuthorizationUrlForToken(IToken token, string callbackUrl)
-		{
-			var builder = new UriBuilder(UserAuthorizeUri);
+    public OAuthSession(IOAuthConsumerContext consumerContext, ITokenRepository tokenRepository)
+    {
+        ConsumerContext = consumerContext;
+        ConsumerRequestFactory = DefaultConsumerRequestFactory.Instance;
+        ConsumerRequestRunner = new DefaultConsumerRequestRunner();
+        _tokenRepository = tokenRepository;
+    }
 
-			var collection = new NameValueCollection();
+    public IConsumerRequestRunner ConsumerRequestRunner { get; set; }
 
-			if (builder.Query != null)
-			{
-				collection.Add(HttpUtility.ParseQueryString(builder.Query));
-			}
+    public IConsumerRequestFactory ConsumerRequestFactory { get; set; }
 
-			if (_queryParameters != null) collection.Add(_queryParameters);
+    public bool CallbackMustBeConfirmed { get; set; }
 
-			collection[Parameters.OAuth_Token] = token.Token;
+    public IOAuthConsumerContext ConsumerContext { get; set; }
 
-			if (!string.IsNullOrEmpty(callbackUrl))
-			{
-				collection[Parameters.OAuth_Callback] = callbackUrl;
-			}
+    public ITokenRepository TokenRepository { get { return _tokenRepository; } }
 
-			builder.Query = "";
+    [Obsolete("All tokens should be stored in a ITokenRepository these days", true)]
+    public IToken AccessToken { get; set; }
 
-			return builder.Uri + "?" + UriUtility.FormatQueryString(collection);
-		}
+    public IMessageLogger MessageLogger { get; set; }
 
-		public IOAuthSession WithFormParameters(IDictionary dictionary)
-		{
-			return AddItems(_formParameters, dictionary);
-		}
+    public IConsumerResponse LogMessage(IConsumerRequest request, IConsumerResponse response)
+    {
+        if (MessageLogger != null)
+        {
+            MessageLogger.LogMessage(request, response);
+        }
 
-		public IOAuthSession WithFormParameters(object anonymousClass)
-		{
-			return AddItems(_formParameters, anonymousClass);
-		}
+        return response;
+    }
 
-		public IOAuthSession WithQueryParameters(IDictionary dictionary)
-		{
-			return AddItems(_queryParameters, dictionary);
-		}
+    public AccessToken GetAccessToken()
+    {
+        var accessToken = _tokenRepository.GetAccessToken();
 
-		public IOAuthSession WithQueryParameters(object anonymousClass)
-		{
-			return AddItems(_queryParameters, anonymousClass);
-		}
+        if (accessToken == null)
+        {
+            throw new MissingTokenException("The token repository doesn't contain a valid access token");
+        }
 
-		public IOAuthSession WithCookies(IDictionary dictionary)
-		{
-			return AddItems(_cookies, dictionary);
-		}
+        if ((accessToken.HasExpired() ?? false) && accessToken.CanRefresh)
+        {
+            // Proactively refresh the access token before using it.
+            return RenewAccessToken();
+        }
 
-		public IOAuthSession WithCookies(object anonymousClass)
-		{
-			return AddItems(_cookies, anonymousClass);
-		}
+        return accessToken;
+    }
 
-		public IOAuthSession WithHeaders(IDictionary dictionary)
-		{
-			return AddItems(_headers, dictionary);
-		}
+    public bool HasValidAccessToken
+    {
+        get
+        {
+            return (TokenRepository != null) && (TokenRepository.GetAccessToken() != null) && (!TokenRepository.GetAccessToken().HasExpired() ?? false);
+        }
+    }
 
-		public IOAuthSession WithHeaders(object anonymousClass)
-		{
-			return AddItems(_headers, anonymousClass);
-		}
+    [Obsolete("Use the overloaded method without using an access token")]
+    public virtual IConsumerRequest Request(IToken accessToken)
+    {
+      var context = new OAuthContext
+        {
+          UseAuthorizationHeader = ConsumerContext.UseHeaderForOAuthParameters
+        };
 
-		public IOAuthSession RequiresCallbackConfirmation()
-		{
-			CallbackMustBeConfirmed = true;
-			return this;
-		}
+      context.Cookies.Add(_cookies);
+      context.FormEncodedParameters.Add(_formParameters);
+      context.Headers.Add(_headers);
+      context.QueryParameters.Add(_queryParameters);
 
-		public IToken RenewAccessToken(IToken accessToken, string sessionHandle)
-		{
-			return RenewAccessToken(accessToken, "GET", sessionHandle);
-		}
+      return ConsumerRequestFactory.CreateConsumerRequest(this, context, ConsumerContext);
+    }
 
-		public IToken RenewAccessToken(IToken accessToken, string method, string sessionHandle)
-		{
-			TokenBase token = BuildRenewAccessTokenContext(accessToken, method, sessionHandle)
-				.Select(collection =>
-				        new TokenBase
-				        	{
-				        		ConsumerKey = accessToken.ConsumerKey,
-				        		Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
-				        		TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
-				        		SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle)
-				        	});
+    public virtual IConsumerRequest Request()
+    {
+      var context = new OAuthContext
+      {
+        UseAuthorizationHeader = ConsumerContext.UseHeaderForOAuthParameters
+      };
 
-			AccessToken = token;
+      context.Cookies.Add(_cookies);
+      context.FormEncodedParameters.Add(_formParameters);
+      context.Headers.Add(_headers);
+      context.QueryParameters.Add(_queryParameters);
 
-			return token;
-		}
+      return ConsumerRequestFactory.CreateConsumerRequest(this, context, ConsumerContext);
+    }
 
-		public IConsumerRequest BuildRenewAccessTokenContext(IToken requestToken, string method, string sessionHandle)
-		{
-			return Request()
-				.ForMethod(method)
-				.AlterContext(context => context.SessionHandle = sessionHandle)
-				.ForUri(AccessTokenUri)
-				.SignWithToken(requestToken);
-		}
+    public RequestToken GetRequestToken()
+    {
+      return GetRequestToken(null);
+    }
 
-		public IToken GetRequestToken(string method)
-		{
-			var results = BuildRequestTokenContext(method).Select(collection =>
-			                                                      new
-			                                                      	{
-			                                                      		ConsumerContext.ConsumerKey,
-			                                                      		Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
-			                                                      		TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
-			                                                      		CallackConfirmed = WasCallbackConfimed(collection)
-			                                                      	});
+    public RequestToken GetRequestToken(Uri callbackUri)
+    {
+        IConsumerRequest request = Request()
+          .ForMethod("GET")
+          .AlterContext(context => context.CallbackUrl = (callbackUri == null) ? "oob" : callbackUri.ToString())
+          .AlterContext(context => context.Token = null)
+          .ForUri(ConsumerContext.RequestTokenUri)
+          .SignWithoutToken();
 
-			if (!results.CallackConfirmed && CallbackMustBeConfirmed)
-			{
-				throw Error.CallbackWasNotConfirmed();
-			}
+        var results = request.Select(collection =>
+        new
+        {
+            ConsumerContext.ConsumerKey,
+            Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
+            TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
+            CallackConfirmed = WasCallbackConfimed(collection)
+        });
 
-			return new TokenBase
-			       	{
-			       		ConsumerKey = results.ConsumerKey,
-			       		Token = results.Token,
-			       		TokenSecret = results.TokenSecret
-			       	};
-		}
+        if (!results.CallackConfirmed && CallbackMustBeConfirmed)
+        {
+            throw Error.CallbackWasNotConfirmed();
+        }
 
-		static bool WasCallbackConfimed(NameValueCollection parameters)
-		{
-			string value = ParseResponseParameter(parameters, Parameters.OAuth_Callback_Confirmed);
-			return (value == "true");
-		}
+        var requestToken = new RequestToken
+        {
+            ConsumerKey = results.ConsumerKey,
+            Token = results.Token,
+            TokenSecret = results.TokenSecret
+        };
 
-		static Uri ParseCallbackUri(string callBackUrl)
-		{
-			if (string.IsNullOrEmpty(callBackUrl)) return null;
-			if (callBackUrl.Equals("oob", StringComparison.InvariantCultureIgnoreCase)) return null;
-			return new Uri(callBackUrl);
-		}
+        TokenRepository.SaveRequestToken(requestToken);
 
-		static string ParseResponseParameter(NameValueCollection collection, string parameter)
-		{
-			string value = (collection[parameter] ?? "").Trim();
-			return (value.Length > 0) ? value : null;
-		}
+        return requestToken;
+    }
 
-		OAuthSession AddItems(NameValueCollection destination, object anonymousClass)
-		{
-			return AddItems(destination, new ReflectionBasedDictionaryAdapter(anonymousClass));
-		}
+    [Obsolete("The request token is stored in the TokenRepository, use the overloaded method that only uses a verificationCode parameter")]
+    public AccessToken ExchangeRequestTokenForAccessToken(IToken requestToken)
+    {
+      return ExchangeRequestTokenForAccessToken(requestToken, null);
+    }
 
-		OAuthSession AddItems(NameValueCollection destination, IDictionary additions)
-		{
-			foreach (string parameter in additions.Keys)
-			{
-				destination[parameter] = Convert.ToString(additions[parameter]);
-			}
+    [Obsolete("The request token is stored in the TokenRepository, use the overloaded method that only uses a verificationCode parameter")]
+    public AccessToken ExchangeRequestTokenForAccessToken(IToken requestToken, string verificationCode)
+    {
+      AccessToken token = BuildExchangeRequestTokenForAccessTokenContext(requestToken, verificationCode)
+        .Select(collection =>
+                new AccessToken
+                  {
+                    ConsumerKey = requestToken.ConsumerKey,
+                    Token = ParseResponseParameter(collection,Parameters.OAuth_Token),
+                    TokenSecret = ParseResponseParameter(collection,Parameters.OAuth_Token_Secret),
+                    SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle),
+                    SessionExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Authorization_Expires_In),
+                    ExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Expires_In),
+                    CreatedDateUtc = DateTime.UtcNow
+                  });
 
-			return this;
-		}
+      AssertValidAccessToken(token);
+      TokenRepository.SaveAccessToken(token);
 
-		public IOAuthSession EnableOAuthRequestBodyHashes()
-		{
-			AddBodyHashesToRawRequests = true;
-			return this;
-		}
-	}
+      return token;
+    }
+
+    public AccessToken ExchangeRequestTokenForAccessToken(string verificationCode)
+    {
+        var requestToken = TokenRepository.GetRequestToken();
+
+        if (requestToken == null)
+        {
+            throw new ApplicationException("The current TokenRepository doesn't have a current request token");
+        }
+
+        AccessToken token = BuildExchangeRequestTokenForAccessTokenContext(requestToken, verificationCode)
+        .Select(collection =>
+                new AccessToken
+                  {
+                    ConsumerKey = requestToken.ConsumerKey,
+                    Token = ParseResponseParameter(collection,Parameters.OAuth_Token),
+                    TokenSecret = ParseResponseParameter(collection,Parameters.OAuth_Token_Secret),
+                    SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle),
+                    SessionExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Authorization_Expires_In),
+                    ExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Expires_In),
+                    CreatedDateUtc = DateTime.UtcNow
+                  });
+
+      AssertValidAccessToken(token);
+      TokenRepository.SaveAccessToken(token);
+
+      return token;
+    }
+      
+
+    public AccessToken RenewAccessToken(IToken accessToken, string sessionHandle)
+    {
+        var requestToken = TokenRepository.GetRequestToken();
+
+        if (requestToken == null)
+        {
+            throw new ApplicationException("The token repository doesn't have a current request token");
+        }
+
+        AccessToken token = BuildRenewAccessTokenContext(accessToken, sessionHandle)
+            .Select(collection =>
+                    new AccessToken
+                    {
+                        ConsumerKey = accessToken.ConsumerKey,
+                        Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
+                        TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
+                        SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle),
+                        SessionExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Authorization_Expires_In),
+                        ExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Expires_In),
+                        CreatedDateUtc = DateTime.UtcNow
+                    });
+
+        AssertValidAccessToken(token);
+        TokenRepository.SaveAccessToken(token);
+
+        return token;
+    }
+
+    public AccessToken RenewAccessToken()
+    {
+        var currentAccessToken = TokenRepository.GetAccessToken();
+
+        if (currentAccessToken == null)
+        {
+            throw new ApplicationException("The token repository doesn't have a current access token");
+        }
+
+        return RenewAccessToken(currentAccessToken, currentAccessToken.SessionHandle);
+    }
+
+    public IConsumerRequest BuildExchangeRequestTokenForAccessTokenContext(IToken requestToken, string verificationCode)
+    {
+      return Request()
+        .ForMethod("GET")
+        .AlterContext(context => context.Verifier = verificationCode)
+        .ForUri(ConsumerContext.AccessTokenUri)
+        .SignWithToken(requestToken);
+    }
+
+    public IConsumerRequest BuildRenewAccessTokenContext(IToken requestToken, string sessionHandle)
+    {
+        return Request()
+          .ForMethod("GET")
+          .AlterContext(context => context.SessionHandle = sessionHandle)
+          .ForUri(ConsumerContext.AccessTokenUri)
+          .SignWithToken(requestToken);
+    }
+
+    [Obsolete("Use the GetUserAuthorizationUrl method instead")]
+    public string GetUserAuthorizationUrlForToken(IToken token)
+    {
+        return GetUserAuthorizationUrl(token);
+    }
+
+    [Obsolete("Use the GetUserAuthorizationUrl method instead")]
+    public string GetUserAuthorizationUrlForToken(IToken token, string callbackUrl)
+    {
+        return GetUserAuthorizationUrl(token);
+    }
+      
+    public string GetUserAuthorizationUrl()
+    {
+        var requestToken = TokenRepository.GetRequestToken();
+
+        if (requestToken == null)
+        {
+            throw new MissingTokenException("The token repository does not contain a valid request token");
+        }
+
+        return GetUserAuthorizationUrl(requestToken);
+    }
+
+    private string GetUserAuthorizationUrl(IToken requestToken)
+    {
+      var builder = new UriBuilder(ConsumerContext.UserAuthorizeUri);
+
+      var collection = new NameValueCollection();
+
+      if (builder.Query != null)
+      {
+          collection.Add(UriUtility.ParseQueryString(builder.Query));
+      }
+
+      if (_queryParameters != null) collection.Add(_queryParameters);
+
+      collection[Parameters.OAuth_Token] = requestToken.Token;
+
+      builder.Query = UriUtility.FormatQueryString(collection);
+
+      return builder.Uri.ToString();
+    }
+
+    public IOAuthSession WithFormParameters(IDictionary<string, string> dictionary)
+    {
+      return AddItems(_formParameters, dictionary);
+    }
+
+    public IOAuthSession WithQueryParameters(IDictionary<string, string> dictionary)
+    {
+      return AddItems(_queryParameters, dictionary);
+    }
+
+    public IOAuthSession WithCookies(IDictionary<string, string> dictionary)
+    {
+      return AddItems(_cookies, dictionary);
+    }
+
+    public IOAuthSession WithHeaders(IDictionary<string, string> dictionary)
+    {
+      return AddItems(_headers, dictionary);
+    }
+      
+    public IOAuthSession RequiresCallbackConfirmation()
+    {
+      CallbackMustBeConfirmed = true;
+      return this;
+    }
+
+    static bool WasCallbackConfimed(NameValueCollection parameters)
+    {
+      string value = ParseResponseParameter(parameters, Parameters.OAuth_Callback_Confirmed);
+      return (value == "true");
+    }
+
+    static string ParseResponseParameter(NameValueCollection collection, string parameter)
+    {
+      string value = (collection[parameter] ?? "").Trim();
+      return (value.Length > 0) ? value : null;
+    }
+
+    OAuthSession AddItems(NameValueCollection destination, IDictionary<string, string> additions)
+    {
+      foreach (string parameter in additions.Keys)
+      {
+        destination[parameter] = additions[parameter];
+      }
+
+      return this;
+    }
+
+    private static void AssertValidAccessToken(AccessToken token)
+    {
+        if (token == null)
+        {
+            throw new MissingTokenException("The access token could not be obtained");
+        }
+
+        string expiryDateString = token.ExpiryDateUtc.HasValue ? token.ExpiryDateUtc.ToString() : "n/a";
+        string usableTimespan = token.SessionTimespan.ToString();
+
+        Debug.WriteLine(string.Format("Access token {0} will last for {1} and will expire at {2} UTC.", token.Token, usableTimespan, expiryDateString));
+    }
+     
+
+    public IConsumerResponse RunConsumerRequest(IConsumerRequest consumerRequest)
+    {
+        int retryCounter = 2;
+        while (retryCounter-- > 0)
+        {
+            IConsumerResponse consumerResponse = ConsumerRequestRunner.Run(consumerRequest);
+            LogMessage(consumerRequest, consumerResponse);
+
+            if (consumerResponse.IsForbiddenResponse)
+            {
+                // Catch http 403 errors generated by IIS that are actually html pages warning about certificate issues..
+                throw new AuthenticationException(string.Format("The API server returned http {0} with content type {1}. See the inner exception for more details.", (int)consumerResponse.ResponseCode, consumerResponse.ContentType), consumerResponse.WebException);
+            }
+
+            if (consumerResponse.IsTokenExpiredResponse && !string.IsNullOrEmpty(consumerRequest.Context.SessionHandle))
+            {
+                // Refresh the access token and try again..
+                AccessToken newAccessToken = RenewAccessToken();
+                consumerRequest.SignWithToken(newAccessToken, false);
+                continue;
+            }
+            
+            if (consumerResponse.IsOAuthProblemResponse)
+            {
+                // A usable response wasn't returned..
+                throw new OAuthException(consumerResponse, consumerRequest.Context, consumerResponse.ToProblemReport());
+            }
+
+            return consumerResponse;
+        }
+
+        throw new ApplicationException("The consumer request could not be executed into a valid consumer response");
+    }
+  }
 }

@@ -24,28 +24,12 @@
 
 #endregion
 
-using System;
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Storage;
-
-namespace DevDefined.OAuth.Provider.Inspectors
+namespace DevDefined.OAuth.Storage
 {
-	public class NonceStoreInspector : IContextInspector
-	{
-		readonly INonceStore _nonceStore;
-
-		public NonceStoreInspector(INonceStore nonceStore)
-		{
-			if (nonceStore == null) throw new ArgumentNullException("nonceStore");
-			_nonceStore = nonceStore;
-		}
-
-		public void InspectContext(ProviderPhase phase, IOAuthContext context)
-		{
-			if (!_nonceStore.RecordNonceAndCheckIsUnique(context, context.Nonce))
-			{
-				throw Error.NonceHasAlreadyBeenUsed(context);
-			}
-		}
-	}
+  public enum RequestForAccessStatus
+  {
+    Unknown = 0,
+    Denied = 2,
+    Granted = 3
+  }
 }

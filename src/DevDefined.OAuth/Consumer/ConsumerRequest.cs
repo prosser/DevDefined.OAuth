@@ -28,260 +28,241 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
-using System.Web;
-using System.Xml.Linq;
+using System.Security.Cryptography.X509Certificates;
+
 using DevDefined.OAuth.Framework;
 using DevDefined.OAuth.Utility;
 
 namespace DevDefined.OAuth.Consumer
 {
-	public class ConsumerRequest : IConsumerRequest
-	{
-		readonly IOAuthConsumerContext _consumerContext;
-		readonly IOAuthContext _context;
-		readonly IToken _token;
+    public class ConsumerRequest : IConsumerRequest
+    {
+        private readonly IOAuthConsumerContext _consumerContext;
+        private readonly IOAuthContext _context;
+        private readonly ICertificateFactory _clientSslCertificateFactory;
+        private readonly IOAuthSession _oauthSession;
 
-		public ConsumerRequest(IOAuthContext context, IOAuthConsumerContext consumerContext, IToken token)
-		{
-			if (context == null) throw new ArgumentNullException("context");
-			if (consumerContext == null) throw new ArgumentNullException("consumerContext");
-			_context = context;
-			_consumerContext = consumerContext;
-			_token = token;
-		}
+        public ConsumerRequest(IOAuthSession oauthSession, IOAuthContext context, IOAuthConsumerContext consumerContext,
+                               ICertificateFactory clientSslCertificateFactory)
+        {
+            _oauthSession = oauthSession;
+            _context = context;
+            _consumerContext = consumerContext;
+            _clientSslCertificateFactory = clientSslCertificateFactory;
+        }
 
-		string ResponseBody { get; set; }
+        public IOAuthContext Context
+        {
+            get { return _context; }
+        }
 
-		public IOAuthConsumerContext ConsumerContext
-		{
-			get { return _consumerContext; }
-		}
+        public IConsumerResponse ToConsumerResponse()
+        {
+            return _oauthSession.RunConsumerRequest(this);
+        }
 
-		public IOAuthContext Context
-		{
-			get { return _context; }
-		}
+        public virtual HttpWebRequest ToWebRequest()
+        {
+            RequestDescription description = GetRequestDescription();
 
-		public XDocument ToDocument()
-		{
-			return XDocument.Parse(ToString());
-		}
+            var request = (HttpWebRequest) WebRequest.Create(description.Url);
+            request.Timeout = (int) TimeSpan.FromMinutes(3).TotalMilliseconds; 
+            request.Method = description.Method;
+            request.UserAgent = _consumerContext.UserAgent;
 
-		public byte[] ToBytes()
-		{
-			return Convert.FromBase64String(ToString());
-		}
+            if (!string.IsNullOrEmpty(AcceptsType))
+            {
+                request.Accept = AcceptsType;
+            }
 
-		public RequestDescription GetRequestDescription()
-		{
-			if (string.IsNullOrEmpty(_context.Signature))
-			{
-				if (_token != null)
-				{
-					_consumerContext.SignContextWithToken(_context, _token);
-				}
-				else
-				{
-					_consumerContext.SignContext(_context);
-				}
-			}
+            DateTime? ifModifiedSinceDate = ParseIfModifiedSince(Context);
 
-			Uri uri = _context.GenerateUri();
+            if (ifModifiedSinceDate.HasValue)
+                request.IfModifiedSince = ifModifiedSinceDate.Value;
 
-			var description = new RequestDescription
-			                  	{
-			                  		Url = uri,
-			                  		Method = _context.RequestMethod,
-			                  	};
+            if (ProxyServerUri != null)
+            {
+                request.Proxy = new WebProxy(ProxyServerUri, false);
+            }
 
-			if ((_context.FormEncodedParameters != null) && (_context.FormEncodedParameters.Count > 0))
-			{
-				description.ContentType = Parameters.HttpFormEncoded;
-				description.Body = UriUtility.FormatQueryString(_context.FormEncodedParameters.ToQueryParametersExcludingTokenSecret());
-			}
-			else if (!string.IsNullOrEmpty(RequestBody))
-			{
-				description.Body = UriUtility.UrlEncode(RequestBody);
-			}
+            if (description.ContentType == Parameters.HttpFormEncoded)
+            {
+                request.ContentType = description.ContentType;
 
-			else if (_context.RawContent != null)
-			{
-				description.ContentType = _context.RawContentType;
-				description.RawBody = _context.RawContent;
-			}
+                using (var writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(description.Body);
+                }
+            }
+            else if (!string.IsNullOrEmpty(description.Body))
+            {
+                using (var writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(description.Body);
+                }
+            }
+            else if (description.RequestStream != null)
+            {
+                using (var requestStream = request.GetRequestStream())
+                {
+                    description.RequestStream.CopyTo(requestStream);
+                }
+            }
 
-			if (_context.Headers != null)
-			{
-				description.Headers.Add(_context.Headers);
-			}
+            if (description.Headers.Count > 0)
+            {
+                foreach (string key in description.Headers.AllKeys)
+                {
+                    request.Headers[key] = description.Headers[key];
+                }
+            }
 
-			if (_consumerContext.UseHeaderForOAuthParameters)
-			{
-				description.Headers[Parameters.OAuth_Authorization_Header] = _context.GenerateOAuthParametersForHeader();
-			}
+            // Attach a client ssl certificate to the HttpWebRequest
+            if (_clientSslCertificateFactory != null)
+            {
+                X509Certificate2 certificate = _clientSslCertificateFactory.CreateCertificate();
 
-			return description;
-		}
+                if (certificate != null)
+                {
+                    request.ClientCertificates.Add(certificate);
+                }
+            }
 
-		public HttpWebResponse ToWebResponse()
-		{
-			try
-			{
-				HttpWebRequest request = ToWebRequest();
-				return (HttpWebResponse) request.GetResponse();
-			}
-			catch (WebException webEx)
-			{
-				OAuthException authException;
+            return request;
+        }
 
-				if (WebExceptionHelper.TryWrapException(Context, webEx, out authException, ResponseBodyAction))
-				{
-					throw authException;
-				}
+        public RequestDescription GetRequestDescription()
+        {
+            if (string.IsNullOrEmpty(_context.Signature))
+            {
+                _consumerContext.SignContext(_context);
+            }
 
-				throw;
-			}
-		}
+            Uri uri = _context.GenerateUri();
 
-		public NameValueCollection ToBodyParameters()
-		{
-			try
-			{
-				string encodedFormParameters = ToString();
+            var description = new RequestDescription
+                                  {
+                                      Url = uri,
+                                      Method = _context.RequestMethod
+                                  };
 
-				if (ResponseBodyAction != null)
-				{
-					ResponseBodyAction(encodedFormParameters);
-				}
+            if ((_context.FormEncodedParameters != null) && (_context.FormEncodedParameters.Count > 0))
+            {
+                description.ContentType = Parameters.HttpFormEncoded;
+                description.Body =
+                    UriUtility.FormatQueryString(_context.FormEncodedParameters.ToQueryParametersExcludingTokenSecret());
+            }
+            else if (!string.IsNullOrEmpty(RequestBody))
+            {
+                description.Body = UriUtility.UrlEncode(RequestBody);
+            }
+            else if (RequestStream != null)
+            {
+                description.RequestStream = RequestStream;
+            }
 
-				try
-				{
-					return HttpUtility.ParseQueryString(encodedFormParameters);
-				}
-				catch (ArgumentNullException)
-				{
-					throw Error.FailedToParseResponse(encodedFormParameters);
-				}
-			}
-			catch (WebException webEx)
-			{
-				throw Error.RequestFailed(webEx);
-			}
-		}
+            if (_consumerContext.UseHeaderForOAuthParameters)
+            {
+                description.Headers[Parameters.OAuth_Authorization_Header] = _context.GenerateOAuthParametersForHeader();
+            }
 
-		public IConsumerRequest SignWithoutToken()
-		{
-			EnsureRequestHasNotBeenSignedYet();
-			_consumerContext.SignContext(_context);
-			return this;
-		}
+            return description;
+        }
 
-		public IConsumerRequest SignWithToken()
-		{
-			return SignWithToken(_token);
-		}
+        [Obsolete("Prefer ToConsumerResponse instead as this has more error handling built in")]
+        public HttpWebResponse ToWebResponse()
+        {
+            try
+            {
+                HttpWebRequest request = ToWebRequest();
+                return (HttpWebResponse) request.GetResponse();
+            }
+            catch (WebException webEx)
+            {
+                OAuthException authException;
 
-		public IConsumerRequest SignWithToken(IToken token)
-		{
-			EnsureRequestHasNotBeenSignedYet();
-			ConsumerContext.SignContextWithToken(_context, token);
-			return this;
-		}
+                if (WebExceptionHelper.TryWrapException(Context, webEx, out authException))
+                {
+                    throw authException;
+                }
 
-		public Uri ProxyServerUri { get; set; }
+                throw;
+            }
+        }
 
-		public Action<string> ResponseBodyAction { get; set; }
+        public IConsumerRequest SignWithoutToken()
+        {
+            EnsureRequestHasNotBeenSignedYet();
+            _consumerContext.SignContext(_context);
+            return this;
+        }
 
-		public string AcceptsType { get; set; }
+        public IConsumerRequest SignWithToken()
+        {
+            var accessToken = _oauthSession.GetAccessToken();
+            return SignWithToken(accessToken);
+        }
 
-		/// <summary>
-		/// Override the default request timeout in milliseconds.
-		/// Sets the <see cref="System.Net.HttpWebRequest.Timeout"/> property.
-		/// </summary>
-		public int? Timeout { get; set; }
+        public IConsumerRequest SignWithToken(IToken token, bool checkForExistingSignature = true)
+        {
+            if (checkForExistingSignature)
+                EnsureRequestHasNotBeenSignedYet();
 
-		public string RequestBody { get; set; }
+            _consumerContext.SignContextWithToken(_context, token);
+            return this;
+        }
 
-		public virtual HttpWebRequest ToWebRequest()
-		{
-			RequestDescription description = GetRequestDescription();
+        public Uri ProxyServerUri { get; set; }
 
-			var request = (HttpWebRequest) WebRequest.Create(description.Url);
-			request.Method = description.Method;
-			request.UserAgent = _consumerContext.UserAgent;
+        public string AcceptsType { get; set; }
 
-			if (Timeout.HasValue)
-				request.Timeout = Timeout.Value;
+        public string RequestBody { get; set; }
 
-			if (!string.IsNullOrEmpty(AcceptsType))
-			{
-				request.Accept = AcceptsType;
-			}
+        public Stream RequestStream { get; set; }
 
-			try
-			{
-				if (Context.Headers["If-Modified-Since"] != null)
-				{
-					string modifiedDateString = Context.Headers["If-Modified-Since"];
-					request.IfModifiedSince = DateTime.Parse(modifiedDateString);
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new ApplicationException("If-Modified-Since header could not be parsed as a datetime", ex);
-			}
+        public override string ToString()
+        {
+            return ToConsumerResponse().Content;
+        }
 
-			if (ProxyServerUri != null)
-			{
-				request.Proxy = new WebProxy(ProxyServerUri, false);
-			}
+        private void EnsureRequestHasNotBeenSignedYet()
+        {
+            if (!string.IsNullOrEmpty(_context.Signature))
+            {
+                throw Error.ThisConsumerRequestHasAlreadyBeenSigned();
+            }
+        }
 
-			if (!string.IsNullOrEmpty(description.Body))
-			{
-				request.ContentType = description.ContentType;
+        public DateTime? ParseIfModifiedSince(IOAuthContext context)
+        {
+            if (context.IfModifiedSince.HasValue)
+            {
+                AssertValidIfModifiedSinceDate(context.IfModifiedSince.Value);
+                return context.IfModifiedSince.Value;
+            }
+            
+            string ifModifiedSinceString = context.Headers["If-Modified-Since"];
 
-				using (var writer = new StreamWriter(request.GetRequestStream()))
-				{
-					writer.Write(description.Body);
-				}
-			}
-			else if (description.RawBody != null && description.RawBody.Length > 0)
-			{
-				request.ContentType = description.ContentType;
+            if (string.IsNullOrEmpty(ifModifiedSinceString))
+                return null;
 
-				using (var writer = new BinaryWriter(request.GetRequestStream()))
-				{
-					writer.Write(description.RawBody);
-				}
-			}
+            DateTime ifModifiedSinceDate;
 
-			if (description.Headers.Count > 0)
-			{
-				foreach (string key in description.Headers.AllKeys)
-				{
-					request.Headers[key] = description.Headers[key];
-				}
-			}
+            if (DateTime.TryParse(ifModifiedSinceString, out ifModifiedSinceDate))
+            {
+                AssertValidIfModifiedSinceDate(ifModifiedSinceDate);
+                return ifModifiedSinceDate;
+            }
+            
+            return null;
+        }
 
-			return request;
-		}
-
-		public override string ToString()
-		{
-			if (string.IsNullOrEmpty(ResponseBody))
-			{
-				ResponseBody = ToWebResponse().ReadToEnd();
-			}
-
-			return ResponseBody;
-		}
-
-		void EnsureRequestHasNotBeenSignedYet()
-		{
-			if (!string.IsNullOrEmpty(_context.Signature))
-			{
-				throw Error.ThisConsumerRequestHasAlreadyBeenSigned();
-			}
-		}
-	}
+        public void AssertValidIfModifiedSinceDate(DateTime date)
+        {
+            if (date < new DateTime(1753, 01, 01))
+            {
+                throw Error.IfModifiedSinceHeaderOutOfRange(date);
+            }
+        }
+    }
 }
