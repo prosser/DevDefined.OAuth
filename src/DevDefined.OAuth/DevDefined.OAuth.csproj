@@ -39,6 +39,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>612</NoWarn>
   </PropertyGroup>
+  <Import Project="$(MSBuildProjectDirectory)\..\..\..\..\src\BooyamiCommon.props" />
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
