@@ -37,7 +37,9 @@ namespace DevDefined.OAuth.Storage.Basic
     {
         public bool CanRefresh
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             get { return !string.IsNullOrEmpty(SessionHandle); }
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         public DateTime CreatedDateUtc { get; set; }

@@ -291,7 +291,7 @@ namespace DevDefined.OAuth.Framework
 
         /// <summary>
         /// An OAuth specific implementation of Url Encoding - we need this to produce consistent base
-        /// strings to other platforms such as php or ruby, as the <see cref="HttpUtility.UrlEncode" />
+        /// strings to other platforms such as php or ruby, as the <see cref="System.Web.HttpUtility.UrlEncode" />
         /// doesn't encode in the same way.
         /// </summary>
         /// <remarks>
