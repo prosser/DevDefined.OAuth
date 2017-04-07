@@ -1,28 +1,21 @@
-#region License
-
 // The MIT License
 //
 // Copyright (c) 2006-2008 DevDefined Limited.
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-#endregion License
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
@@ -41,7 +34,8 @@ namespace DevDefined.OAuth.Framework
         private static readonly string[] QuoteCharacters = new[] { "\"", "'" };
 
         /// <summary>
-        /// Takes an http method, url and a set of parameters and formats them as a signature base as per the OAuth core spec.
+        /// Takes an http method, url and a set of parameters and formats them as a signature base as
+        /// per the OAuth core spec.
         /// </summary>
         /// <param name="httpMethod"></param>
         /// <param name="url"></param>
@@ -214,8 +208,8 @@ namespace DevDefined.OAuth.Framework
         }
 
         /// <summary>
-        /// Normalizes a Url according to the OAuth specification (this ensures http or https on a default port is not displayed
-        /// with the :XXX following the host in the url).
+        /// Normalizes a Url according to the OAuth specification (this ensures http or https on a
+        /// default port is not displayed with the :XXX following the host in the url).
         /// </summary>
         /// <param name="uri"></param>
         /// <returns></returns>
@@ -290,17 +284,17 @@ namespace DevDefined.OAuth.Framework
         }
 
         /// <summary>
-        /// An OAuth specific implementation of Url Encoding - we need this to produce consistent base
-        /// strings to other platforms such as php or ruby, as the <see cref="System.Web.HttpUtility.UrlEncode" />
-        /// doesn't encode in the same way.
+        /// An OAuth specific implementation of Url Encoding - we need this to produce consistent
+        /// base strings to other platforms such as php or ruby, as the HttpUtility.UrlEncode doesn't
+        /// encode in the same way.
         /// </summary>
         /// <remarks>
-        /// Taken from: http://oauth.net/core/1.0a/#encoding_parameters
-        /// All parameter names and values are escaped using the [RFC3986] percent-encoding (%xx) mechanism.
-        /// Characters not in the unreserved character set ([RFC3986] section 2.3) MUST be encoded. Characters
-        /// in the unreserved character set MUST NOT be encoded. Hexadecimal characters in encodings MUST
-        /// be upper case. Text names and values MUST be encoded as UTF-8 octets before percent-encoding
-        /// them per [RFC3629].
+        /// Taken from: http://oauth.net/core/1.0a/#encoding_parameters All parameter names and
+        /// values are escaped using the [RFC3986] percent-encoding (%xx) mechanism. Characters not
+        /// in the unreserved character set ([RFC3986] section 2.3) MUST be encoded. Characters in
+        /// the unreserved character set MUST NOT be encoded. Hexadecimal characters in encodings
+        /// MUST be upper case. Text names and values MUST be encoded as UTF-8 octets before
+        /// percent-encoding them per [RFC3629].
         /// </remarks>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -364,9 +358,7 @@ namespace DevDefined.OAuth.Framework
         /// <summary>
         /// Lexicographical byte value string comparer
         /// </summary>
-        /// <remarks>
-        /// Adapted from http://stackoverflow.com/questions/839429/oauth-lexicographical-byte-value-ordering-in-c
-        /// </remarks>
+        /// <remarks>Adapted from http://stackoverflow.com/questions/839429/oauth-lexicographical-byte-value-ordering-in-c</remarks>
         private class LexicographicalByteValueStringComparer : IComparer<string>
         {
             public int Compare(string x, string y)

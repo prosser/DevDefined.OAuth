@@ -105,7 +105,9 @@ namespace DevDefined.OAuth.Consumer
             if (token is AccessToken)
             {
                 // I'm sure this violates SOLID...
+#pragma warning disable CS0612 // Type or member is obsolete
                 context.SessionHandle = (token as AccessToken).SessionHandle;
+#pragma warning restore CS0612 // Type or member is obsolete
             }
 
             SignContext(context);

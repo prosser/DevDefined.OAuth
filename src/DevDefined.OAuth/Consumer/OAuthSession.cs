@@ -143,7 +143,9 @@ namespace DevDefined.OAuth.Consumer
                .AlterContext(context => context.XAuthUsername = xAuthUsername)
                .AlterContext(context => context.XAuthPassword = xAuthPassword)
                .AlterContext(context => context.XAuthMode = xAuthMode)
+#pragma warning disable CS0612 // Type or member is obsolete
                .ForUri(AccessTokenUri)
+#pragma warning restore CS0612 // Type or member is obsolete
                .SignWithoutToken();
         }
 
@@ -219,8 +221,10 @@ namespace DevDefined.OAuth.Consumer
                           ConsumerKey = requestToken.ConsumerKey,
                           Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
                           TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
-                          SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle),
-                          SessionExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Authorization_Expires_In),
+#pragma warning disable CS0612 // Type or member is obsolete
+                        SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle),
+#pragma warning restore CS0612 // Type or member is obsolete
+                        SessionExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Authorization_Expires_In),
                           ExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Expires_In),
                           CreatedDateUtc = DateTime.UtcNow
                       });
@@ -356,7 +360,9 @@ namespace DevDefined.OAuth.Consumer
                             ConsumerKey = accessToken.ConsumerKey,
                             Token = ParseResponseParameter(collection, Parameters.OAuth_Token),
                             TokenSecret = ParseResponseParameter(collection, Parameters.OAuth_Token_Secret),
+#pragma warning disable CS0612 // Type or member is obsolete
                             SessionHandle = ParseResponseParameter(collection, Parameters.OAuth_Session_Handle),
+#pragma warning restore CS0612 // Type or member is obsolete
                             SessionExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Authorization_Expires_In),
                             ExpiresIn = ParseResponseParameter(collection, Parameters.OAuth_Expires_In),
                             CreatedDateUtc = DateTime.UtcNow
@@ -377,7 +383,9 @@ namespace DevDefined.OAuth.Consumer
                 throw new ApplicationException("The token repository doesn't have a current access token");
             }
 
+#pragma warning disable CS0612 // Type or member is obsolete
             return RenewAccessToken(currentAccessToken, currentAccessToken.SessionHandle);
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Obsolete("Use the overloaded method without using an access token")]
