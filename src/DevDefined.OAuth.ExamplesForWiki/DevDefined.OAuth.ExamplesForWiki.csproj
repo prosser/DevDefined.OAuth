@@ -8,8 +8,8 @@
     <ProjectGuid>{2E8CA9C0-A8A7-4EE2-99D3-C51B86864B1E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevDefined.OAuth.ExamplesForWiki</RootNamespace>
-    <AssemblyName>DevDefined.OAuth.ExamplesForWiki</AssemblyName>
+    <RootNamespace>Booyami.DevDefined.OAuth.ExamplesForWiki</RootNamespace>
+    <AssemblyName>Booyami.DevDefined.OAuth.ExamplesForWiki</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

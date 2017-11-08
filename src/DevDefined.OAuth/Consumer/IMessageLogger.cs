@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public interface IMessageLogger
     {

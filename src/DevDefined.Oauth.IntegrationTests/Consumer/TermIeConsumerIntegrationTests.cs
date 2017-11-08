@@ -25,12 +25,12 @@
 #endregion
 
 using System.Security.Cryptography.X509Certificates;
-using DevDefined.OAuth.Consumer;
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Tests;
+using Booyami.DevDefined.OAuth.Consumer;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Tests;
 using Xunit;
 
-namespace DevDefined.Oauth.IntegrationTests.Consumer
+namespace Booyami.DevDefined.Oauth.IntegrationTests.Consumer
 {
   /// <summary>
   /// These tests check our consumer implementation against the test server at: 

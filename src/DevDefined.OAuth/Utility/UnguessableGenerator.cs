@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DevDefined.OAuth.Utility
+namespace Booyami.DevDefined.OAuth.Utility
 {
     /// <summary>
     /// A simple class which can be used to generate "unguessable" verifier values.

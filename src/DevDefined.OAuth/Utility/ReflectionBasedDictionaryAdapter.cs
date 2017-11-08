@@ -17,7 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace DevDefined.OAuth.Utility
+namespace Booyami.DevDefined.OAuth.Utility
 {
     /// <summary>
     /// Pendent

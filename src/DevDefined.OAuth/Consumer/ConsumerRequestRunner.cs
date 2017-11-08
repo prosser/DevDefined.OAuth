@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public interface IConsumerRequestRunner
     {

@@ -31,7 +31,7 @@ using System.Linq;
 using System.Text;
 using QueryParameter = System.Collections.Generic.KeyValuePair<string, string>;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     [Serializable]
     public class OAuthContext : IOAuthContext

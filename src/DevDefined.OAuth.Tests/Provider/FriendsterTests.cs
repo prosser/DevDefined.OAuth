@@ -27,11 +27,11 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Framework.Signing;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework.Signing;
 using Xunit;
 
-namespace DevDefined.OAuth.Tests.Provider
+namespace Booyami.DevDefined.OAuth.Tests.Provider
 {
 	// As reported in issue here:  http://code.google.com/p/devdefined-tools/issues/detail?id=1
 	// validating OAuth requests from Friendster was failing - turns out to be OpenSocial platforms 

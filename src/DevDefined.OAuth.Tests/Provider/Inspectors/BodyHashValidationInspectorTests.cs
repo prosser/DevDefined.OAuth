@@ -24,11 +24,11 @@
 
 #endregion
 
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Provider.Inspectors;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Provider.Inspectors;
 using Xunit;
 
-namespace DevDefined.OAuth.Tests.Provider.Inspectors
+namespace Booyami.DevDefined.OAuth.Tests.Provider.Inspectors
 {
 	public class BodyHashValidationInspectorTests
 	{

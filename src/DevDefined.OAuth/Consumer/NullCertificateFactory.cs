@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public class NullCertificateFactory : ICertificateFactory
     {

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Net;
 
-namespace DevDefined.OAuth.Utility
+namespace Booyami.DevDefined.OAuth.Utility
 {
     public static class StreamExtensions
     {

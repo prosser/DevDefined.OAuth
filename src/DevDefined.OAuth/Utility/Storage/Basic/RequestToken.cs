@@ -24,10 +24,10 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 using System;
 
-namespace DevDefined.OAuth.Storage.Basic
+namespace Booyami.DevDefined.OAuth.Storage.Basic
 {
     /// <summary>
     /// Simple request token model, this provides information about a request token which has been issued, including

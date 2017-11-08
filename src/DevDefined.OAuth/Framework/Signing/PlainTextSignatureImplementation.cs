@@ -24,7 +24,7 @@
 
 #endregion
 
-namespace DevDefined.OAuth.Framework.Signing
+namespace Booyami.DevDefined.OAuth.Framework.Signing
 {
   public class PlainTextSignatureImplementation : IContextSignatureImplementation
   {

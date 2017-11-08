@@ -24,14 +24,14 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Utility;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Utility;
 using System;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public class ConsumerRequest : IConsumerRequest
     {

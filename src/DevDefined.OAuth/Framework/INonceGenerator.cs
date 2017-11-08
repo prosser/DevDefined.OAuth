@@ -24,9 +24,9 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 
-namespace DevDefined.OAuth
+namespace Booyami.DevDefined.OAuth
 {
     /// <summary>
     /// Generates a nonce, which should be unique for the selected consumer (i.e. never generated

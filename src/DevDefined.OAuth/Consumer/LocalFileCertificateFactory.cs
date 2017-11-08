@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public class LocalFileCertificateFactory : ICertificateFactory
     {

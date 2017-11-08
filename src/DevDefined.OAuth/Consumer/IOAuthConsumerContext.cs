@@ -24,11 +24,11 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 using System;
 using System.Security.Cryptography;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     /// <summary>
     /// A consumer context is used to identify a consumer, and to sign a context on behalf

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     internal class BoundParameter
     {

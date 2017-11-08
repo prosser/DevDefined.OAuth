@@ -24,10 +24,10 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Storage.Basic;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Storage.Basic;
 
-namespace DevDefined.OAuth.Storage
+namespace Booyami.DevDefined.OAuth.Storage
 {
     public interface ITokenStore
     {

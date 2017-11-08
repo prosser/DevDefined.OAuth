@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Booyami.DevDefined.OAuth</id>
+    <version>1.0.1</version>
+    <title>Booyami.DevDefined.OAuth</title>
+    <authors>DevDefined</authors>
+    <owners>DevDefined</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Booyami patched DevDefined.OAuth</description>
+    <releaseNotes>External component.</releaseNotes>
+    <copyright>Copyright DevDefined</copyright>
+    <tags></tags>
+  </metadata>
+  <files>
+    <file src="bin\release\Booyami.DevDefined.OAuth.dll" target="lib\Booyami.DevDefined.OAuth.dll" />
+    <file src="bin\release\Booyami.DevDefined.OAuth.docs.xml" target="lib\Booyami.DevDefined.OAuth.docs.xml" />
+  </files>
+</package>

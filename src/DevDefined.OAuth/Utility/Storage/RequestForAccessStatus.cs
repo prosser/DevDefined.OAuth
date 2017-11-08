@@ -24,7 +24,7 @@
 
 #endregion License
 
-namespace DevDefined.OAuth.Storage
+namespace Booyami.DevDefined.OAuth.Storage
 {
     public enum RequestForAccessStatus
     {

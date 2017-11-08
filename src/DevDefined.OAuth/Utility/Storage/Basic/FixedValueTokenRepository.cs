@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DevDefined.OAuth.Storage.Basic
+namespace Booyami.DevDefined.OAuth.Storage.Basic
 {
     public class FixedValueTokenRepository : ITokenRepository
     {

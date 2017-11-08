@@ -2,7 +2,7 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public class RequestDescription
     {

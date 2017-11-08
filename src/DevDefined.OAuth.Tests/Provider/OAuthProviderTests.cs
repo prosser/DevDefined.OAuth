@@ -25,14 +25,14 @@
 #endregion
 
 using System;
-using DevDefined.OAuth.Consumer;
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Provider;
-using DevDefined.OAuth.Provider.Inspectors;
-using DevDefined.OAuth.Testing;
+using Booyami.DevDefined.OAuth.Consumer;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Provider;
+using Booyami.DevDefined.OAuth.Provider.Inspectors;
+using Booyami.DevDefined.OAuth.Testing;
 using Xunit;
 
-namespace DevDefined.OAuth.Tests.Provider
+namespace Booyami.DevDefined.OAuth.Tests.Provider
 {
 	public class OAuthProvider10Tests
 	{

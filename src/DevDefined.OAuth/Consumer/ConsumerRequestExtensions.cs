@@ -1,11 +1,11 @@
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Utility;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Utility;
 using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public static class ConsumerRequestExtensions
     {

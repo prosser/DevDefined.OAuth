@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using DevDefined.OAuth.Consumer;
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Tests;
+using Booyami.DevDefined.OAuth.Consumer;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Tests;
 using Xunit;
 
-namespace DevDefined.OAuth.ExamplesForWiki
+namespace Booyami.DevDefined.OAuth.ExamplesForWiki
 {
 	public class ConsumerWikiExamples
 	{

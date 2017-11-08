@@ -26,7 +26,7 @@
 
 using System.Security.Cryptography;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     public class SigningContext
     {

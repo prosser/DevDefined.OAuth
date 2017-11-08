@@ -24,11 +24,11 @@
 
 #endregion License
 
-using DevDefined.OAuth.Consumer;
+using Booyami.DevDefined.OAuth.Consumer;
 using System;
 using System.Runtime.Serialization;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     public class OAuthException : Exception
     {

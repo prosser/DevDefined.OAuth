@@ -26,7 +26,7 @@
 
 using System;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     public static class DateTimeUtility
     {

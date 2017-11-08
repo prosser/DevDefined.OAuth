@@ -1,6 +1,6 @@
-﻿using DevDefined.OAuth.Consumer;
+﻿using Booyami.DevDefined.OAuth.Consumer;
 
-namespace DevDefined.OAuth.Logging
+namespace Booyami.DevDefined.OAuth.Logging
 {
     public class DebugMessageLogger : IMessageLogger
     {

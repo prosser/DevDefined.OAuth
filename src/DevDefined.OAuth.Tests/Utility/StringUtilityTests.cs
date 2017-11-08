@@ -26,11 +26,11 @@
 
 using System.Diagnostics;
 using System.Linq;
-using DevDefined.OAuth.Utility;
+using Booyami.DevDefined.OAuth.Utility;
 using Xunit;
 using Xunit.Extensions;
 
-namespace DevDefined.OAuth.Tests.Utility
+namespace Booyami.DevDefined.OAuth.Tests.Utility
 {
 	public class StringUtilityTests
 	{

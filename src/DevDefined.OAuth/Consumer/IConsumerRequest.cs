@@ -1,9 +1,9 @@
-﻿using DevDefined.OAuth.Framework;
+﻿using Booyami.DevDefined.OAuth.Framework;
 using System;
 using System.IO;
 using System.Net;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public interface IConsumerRequest
     {

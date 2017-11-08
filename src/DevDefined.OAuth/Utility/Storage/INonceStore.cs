@@ -24,9 +24,9 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 
-namespace DevDefined.OAuth.Storage
+namespace Booyami.DevDefined.OAuth.Storage
 {
     /// <summary>
     /// A nonce store is used to avoid requests being "replayed".

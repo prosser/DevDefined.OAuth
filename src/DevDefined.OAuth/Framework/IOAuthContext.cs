@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Specialized;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     public interface IOAuthContext : IToken
     {

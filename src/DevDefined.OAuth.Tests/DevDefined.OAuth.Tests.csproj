@@ -8,8 +8,8 @@
     <ProjectGuid>{86815C8E-3E6E-4176-9548-B40B2C691144}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevDefined.OAuth.Tests</RootNamespace>
-    <AssemblyName>DevDefined.OAuth.Tests</AssemblyName>
+    <RootNamespace>Booyami.DevDefined.OAuth.Tests</RootNamespace>
+    <AssemblyName>Booyami.DevDefined.OAuth.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

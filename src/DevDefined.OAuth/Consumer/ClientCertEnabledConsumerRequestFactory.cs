@@ -24,9 +24,9 @@
 
 #endregion
 
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
 	public class ClientCertEnabledConsumerRequestFactory : IConsumerRequestFactory
 	{

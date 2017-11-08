@@ -24,8 +24,8 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Storage.Basic;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Storage.Basic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -33,7 +33,7 @@ using System.Diagnostics;
 using System.Security.Authentication;
 using XeroApi.OAuth.Framework;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     [Serializable]
     public class OAuthSession : IOAuthSession

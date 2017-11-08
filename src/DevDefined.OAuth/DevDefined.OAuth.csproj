@@ -7,8 +7,8 @@
     <ProjectGuid>{61B700B6-3911-4CEF-8751-7F42CA765068}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevDefined.OAuth</RootNamespace>
-    <AssemblyName>DevDefined.OAuth</AssemblyName>
+    <RootNamespace>Booyami.DevDefined.OAuth</RootNamespace>
+    <AssemblyName>Booyami.DevDefined.OAuth</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

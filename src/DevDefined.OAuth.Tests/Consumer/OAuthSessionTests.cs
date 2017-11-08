@@ -25,11 +25,11 @@
 #endregion
 
 using System.Text;
-using DevDefined.OAuth.Consumer;
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Consumer;
+using Booyami.DevDefined.OAuth.Framework;
 using Xunit;
 
-namespace DevDefined.OAuth.Tests.Consumer
+namespace Booyami.DevDefined.OAuth.Tests.Consumer
 {
 	public class OAuthSessionTests
 	{

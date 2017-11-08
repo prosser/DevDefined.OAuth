@@ -24,7 +24,7 @@ using System.Linq;
 using System.Text;
 using QueryParameter = System.Collections.Generic.KeyValuePair<string, string>;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     public static class UriUtility
     {

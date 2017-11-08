@@ -28,13 +28,13 @@ using System;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using DevDefined.OAuth.Consumer;
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Tests;
+using Booyami.DevDefined.OAuth.Consumer;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Tests;
 using WatiN.Core;
 using Xunit;
 
-namespace DevDefined.Oauth.IntegrationTests.Consumer
+namespace Booyami.DevDefined.Oauth.IntegrationTests.Consumer
 {
   public class GoogleIntegrationTests
   {

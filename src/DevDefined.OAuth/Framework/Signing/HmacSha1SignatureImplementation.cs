@@ -28,7 +28,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DevDefined.OAuth.Framework.Signing
+namespace Booyami.DevDefined.OAuth.Framework.Signing
 {
   public class HmacSha1SignatureImplementation : IContextSignatureImplementation
   {

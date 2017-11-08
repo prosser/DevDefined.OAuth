@@ -26,7 +26,7 @@
 
 using System;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     [Serializable]
     public class TokenBase : IToken

@@ -28,9 +28,9 @@ using System;
 using System.IO;
 using System.Net;
 
-//using DevDefined.OAuth.Provider;
+//using Booyami.DevDefined.OAuth.Provider;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     public static class Error
     {

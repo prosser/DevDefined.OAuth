@@ -30,7 +30,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
-namespace DevDefined.OAuth.Framework
+namespace Booyami.DevDefined.OAuth.Framework
 {
     [Serializable]
     public class OAuthProblemReport

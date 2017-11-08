@@ -26,10 +26,10 @@
 
 using System;
 using System.Text;
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 using Xunit;
 
-namespace DevDefined.OAuth.Tests.Framework
+namespace Booyami.DevDefined.OAuth.Tests.Framework
 {
 	public class OAuthContextTests
 	{

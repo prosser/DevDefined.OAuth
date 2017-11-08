@@ -1,4 +1,4 @@
-﻿namespace DevDefined.OAuth.Storage.Basic
+﻿namespace Booyami.DevDefined.OAuth.Storage.Basic
 {
     /// <summary>
     /// A simplistic repository for access and request of token models.

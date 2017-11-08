@@ -26,11 +26,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 using Xunit;
 using QueryParameter = System.Collections.Generic.KeyValuePair<string, string>;
 
-namespace DevDefined.OAuth.Tests.Framework
+namespace Booyami.DevDefined.OAuth.Tests.Framework
 {
 	public class UriUtilityTests
 	{

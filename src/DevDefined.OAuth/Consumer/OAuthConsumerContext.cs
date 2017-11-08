@@ -24,13 +24,13 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Framework.Signing;
-using DevDefined.OAuth.Storage.Basic;
+using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework.Signing;
+using Booyami.DevDefined.OAuth.Storage.Basic;
 using System;
 using System.Security.Cryptography;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     [Serializable]
     public class OAuthConsumerContext : IOAuthConsumerContext

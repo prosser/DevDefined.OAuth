@@ -24,10 +24,10 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 using System;
 
-namespace DevDefined.OAuth
+namespace Booyami.DevDefined.OAuth
 {
     /// <summary>
     /// Generates unique nonces (via Guids) to let the server detect duplicated requests.

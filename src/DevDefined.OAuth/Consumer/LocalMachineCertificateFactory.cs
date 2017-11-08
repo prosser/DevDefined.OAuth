@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     /// <summary>
     /// Creates X509 certificates from the Local Computer certificate sture based on the certificate subject.

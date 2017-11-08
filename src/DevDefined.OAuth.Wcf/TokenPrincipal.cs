@@ -25,9 +25,9 @@
 #endregion
 
 using System.Security.Principal;
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 
-namespace DevDefined.OAuth.Wcf
+namespace Booyami.DevDefined.OAuth.Wcf
 {
   public class TokenPrincipal : GenericPrincipal
   {

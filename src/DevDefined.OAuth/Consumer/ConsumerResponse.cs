@@ -1,5 +1,5 @@
-﻿using DevDefined.OAuth.Framework;
-using DevDefined.OAuth.Utility;
+﻿using Booyami.DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Utility;
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace DevDefined.OAuth.Consumer
+namespace Booyami.DevDefined.OAuth.Consumer
 {
     public interface IConsumerResponse
     {

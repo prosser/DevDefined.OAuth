@@ -1,4 +1,4 @@
-﻿namespace DevDefined.OAuth.Storage.Basic
+﻿namespace Booyami.DevDefined.OAuth.Storage.Basic
 {
     /// <summary>
     /// In-Memory implementation of a token repository

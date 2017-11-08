@@ -24,10 +24,10 @@
 
 #endregion License
 
-using DevDefined.OAuth.Framework;
+using Booyami.DevDefined.OAuth.Framework;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DevDefined.OAuth.Storage
+namespace Booyami.DevDefined.OAuth.Storage
 {
     public interface IConsumerStore
     {

@@ -27,7 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DevDefined.OAuth.Framework.Signing
+namespace Booyami.DevDefined.OAuth.Framework.Signing
 {
   public class OAuthContextSigner : IOAuthContextSigner
   {
